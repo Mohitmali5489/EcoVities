@@ -19,6 +19,10 @@
             --md-sys-color-surface: #fbfdf7;
             --md-sys-color-surface-container: #f0f4ee;
             --md-sys-color-surface-container-high: #e2e8e0;
+            --md-sys-color-surface-container-highest: #dce2d9;
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
         }
 
         body { 
@@ -41,18 +45,17 @@
         .view { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .view.active { display: flex; opacity: 1; transform: translateY(0); }
 
-        /* Material Bottom Nav Active State */
+        /* Bottom Nav Styling */
         .nav-item .material-symbols-rounded, .nav-item span {
-            color: #4b5563; /* Default unselected gray */
+            color: #4b5563;
             transition: color 0.2s, font-weight 0.2s;
         }
         .nav-item:hover .material-symbols-rounded, .nav-item:hover span {
-            color: #111827; /* Hover dark gray */
+            color: #111827;
         }
-        /* Material Bottom Nav Active State */
         .nav-indicator {
             position: absolute;
-            top: 4px; /* <-- Add this line to lock it behind the icon */
+            top: 4px;
             width: 64px;
             height: 32px;
             background-color: transparent;
@@ -71,77 +74,104 @@
             font-weight: 700 !important; 
             color: var(--md-sys-color-on-primary-container) !important; 
         }
+
+        /* Number Input Reset */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        
+        /* QR Scanner Animation */
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .scan-line {
+            animation: scan 2s linear infinite;
+        }
     </style>
 </head>
 <body class="flex justify-center min-h-screen">
 
     <div class="w-full max-w-md bg-[var(--md-sys-color-surface)] shadow-2xl h-[100dvh] relative overflow-hidden flex flex-col">
         
+        <!-- ================= HOME VIEW ================= -->
         <div id="view-home" class="view active flex-col flex-1 overflow-y-auto pb-28 scrollbar-hide">
-            
             <div class="px-6 pt-6 pb-4 flex justify-between items-center bg-[var(--md-sys-color-surface)] sticky top-0 z-20">
                 <div class="flex items-center gap-3">
-                   
-                    <span class="text-xl font-medium text-gray-800 tracking-tight">EcoVities</span>
+                    <div class="w-8 h-8 rounded-full bg-[var(--md-sys-color-primary)] flex items-center justify-center text-white">
+                        <span class="material-symbols-rounded text-xl icon-filled">eco</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800 tracking-tight">EcoVities</span>
                 </div>
                 <div class="flex gap-4">
                     <button onclick="switchView('notifications')" class="relative text-gray-600 hover:bg-gray-100 p-2 rounded-full transition">
                         <span class="material-symbols-rounded">notifications</span>
                         <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[var(--md-sys-color-surface)]"></span>
                     </button>
-                    <button onclick="switchView('profile')" class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-medium text-sm overflow-hidden border border-gray-200">
+                    <button onclick="switchView('profile')" class="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-medium text-sm overflow-hidden border border-gray-200 shadow-sm transition hover:opacity-80">
                         <img src="https://api.dicebear.com/7.x/notionists/svg?seed=John&backgroundColor=c8f0ce" alt="Profile" class="w-full h-full object-cover">
                     </button>
                 </div>
             </div>
 
             <div class="px-6 py-6 text-center">
-                <p class="text-sm font-medium text-gray-600 mb-2">Eco Points Balance</p>
-                <h1 class="text-6xl font-medium text-gray-900 tracking-tighter flex justify-center items-center gap-2">
+                <p class="text-sm font-medium text-gray-600 mb-2">Available EcoPoints</p>
+                <h1 class="text-6xl font-semibold text-gray-900 tracking-tighter flex justify-center items-center gap-2">
+                    <span class="text-3xl text-gray-400 font-medium mt-2">EP</span>
                     2,450
-                    <span class="material-symbols-rounded text-green-600 text-4xl icon-filled">eco</span>
                 </h1>
             </div>
 
+            <!-- QUICK ACTIONS -->
             <div class="px-6 py-4 grid grid-cols-3 gap-3">
-                <button class="bg-[var(--md-sys-color-primary)] text-white py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 shadow-sm">
+                <button onclick="switchView('scan')" class="bg-[var(--md-sys-color-primary)] text-white py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:opacity-90 transition active:scale-95 shadow-md">
                     <span class="material-symbols-rounded">qr_code_scanner</span>
                     <span class="text-[13px] font-medium tracking-wide">Scan QR</span>
                 </button>
-                <button class="bg-[var(--md-sys-color-surface-container-high)] text-gray-900 py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:bg-gray-300 transition active:scale-95">
+                <button onclick="switchView('contacts')" class="bg-[var(--md-sys-color-surface-container-high)] text-gray-900 py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:bg-[var(--md-sys-color-surface-container-highest)] transition active:scale-95 shadow-sm">
                     <span class="material-symbols-rounded">arrow_upward</span>
                     <span class="text-[13px] font-medium tracking-wide">Send</span>
                 </button>
-                <button class="bg-[var(--md-sys-color-surface-container-high)] text-gray-900 py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:bg-gray-300 transition active:scale-95">
+                <button onclick="switchView('receive')" class="bg-[var(--md-sys-color-surface-container-high)] text-gray-900 py-4 rounded-3xl flex flex-col items-center justify-center gap-2 hover:bg-[var(--md-sys-color-surface-container-highest)] transition active:scale-95 shadow-sm">
                     <span class="material-symbols-rounded">arrow_downward</span>
                     <span class="text-[13px] font-medium tracking-wide">Receive</span>
                 </button>
             </div>
 
+            <!-- RECENT PEOPLE -->
             <div class="mt-4 px-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-base font-medium text-gray-900">People & businesses</h2>
                 </div>
                 <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                    <div class="flex flex-col items-center min-w-[72px] cursor-pointer group">
-                        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-lg mb-2 group-hover:scale-105 transition">A</div>
+                    <div onclick="openChat('Alice', 'A', 'bg-blue-100', 'text-blue-700', '+91 98765 43210')" class="flex flex-col items-center min-w-[72px] cursor-pointer group">
+                        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-lg mb-2 group-hover:scale-105 transition shadow-sm">A</div>
                         <span class="text-[13px] text-gray-800 font-medium truncate w-full text-center">Alice</span>
                     </div>
-                    <div class="flex flex-col items-center min-w-[72px] cursor-pointer group">
-                        <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-medium text-lg mb-2 group-hover:scale-105 transition">G</div>
+                    <div onclick="openChat('Green Cafe', 'G', 'bg-green-100', 'text-green-700', 'Business Account')" class="flex flex-col items-center min-w-[72px] cursor-pointer group">
+                        <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-medium text-lg mb-2 group-hover:scale-105 transition shadow-sm">G</div>
                         <span class="text-[13px] text-gray-800 font-medium truncate w-full text-center">Green Cafe</span>
                     </div>
-                    <div class="flex flex-col items-center min-w-[72px] cursor-pointer group">
-                        <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-medium text-lg mb-2 group-hover:scale-105 transition">M</div>
+                    <div onclick="openChat('Metro', 'M', 'bg-purple-100', 'text-purple-700', 'Business Account')" class="flex flex-col items-center min-w-[72px] cursor-pointer group">
+                        <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-medium text-lg mb-2 group-hover:scale-105 transition shadow-sm">M</div>
                         <span class="text-[13px] text-gray-800 font-medium truncate w-full text-center">Metro</span>
                     </div>
-                    <div class="flex flex-col items-center min-w-[72px] cursor-pointer group">
-                        <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-medium text-lg mb-2 group-hover:scale-105 transition">D</div>
+                    <div onclick="openChat('David', 'D', 'bg-orange-100', 'text-orange-700', '+91 98765 00000')" class="flex flex-col items-center min-w-[72px] cursor-pointer group">
+                        <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-medium text-lg mb-2 group-hover:scale-105 transition shadow-sm">D</div>
                         <span class="text-[13px] text-gray-800 font-medium truncate w-full text-center">David</span>
+                    </div>
+                    <div onclick="openChat('Sarah', 'S', 'bg-pink-100', 'text-pink-700', '+91 88888 11111')" class="flex flex-col items-center min-w-[72px] cursor-pointer group">
+                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-pink-700 font-medium text-lg mb-2 group-hover:scale-105 transition shadow-sm">S</div>
+                        <span class="text-[13px] text-gray-800 font-medium truncate w-full text-center">Sarah</span>
                     </div>
                 </div>
             </div>
 
+            <!-- RECENT ACTIVITY -->
             <div class="mt-2 px-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-base font-medium text-gray-900">Recent activity</h2>
@@ -151,39 +181,24 @@
                 </div>
                 
                 <div class="bg-[var(--md-sys-color-surface-container)] rounded-3xl p-2 space-y-1">
-                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-white/50 transition cursor-pointer">
+                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-gray-700 shadow-sm">
-                                <span class="material-symbols-rounded">storefront</span>
-                            </div>
-                            <div>
-                                <p class="text-[15px] font-medium text-gray-900">Green Cafe</p>
-                                <p class="text-[13px] text-gray-500">Today, 10:42 AM</p>
-                            </div>
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-gray-700 shadow-sm"><span class="material-symbols-rounded">storefront</span></div>
+                            <div><p class="text-[15px] font-medium text-gray-900">Green Cafe</p><p class="text-[13px] text-gray-500">Today, 10:42 AM</p></div>
                         </div>
                         <div class="font-medium text-[15px] text-gray-900">-45</div>
                     </div>
-                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-white/50 transition cursor-pointer">
+                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 shadow-sm">
-                                <span class="material-symbols-rounded">recycling</span>
-                            </div>
-                            <div>
-                                <p class="text-[15px] font-medium text-gray-900">Recycling Reward</p>
-                                <p class="text-[13px] text-gray-500">Yesterday</p>
-                            </div>
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 shadow-sm"><span class="material-symbols-rounded">recycling</span></div>
+                            <div><p class="text-[15px] font-medium text-gray-900">Recycling Reward</p><p class="text-[13px] text-gray-500">Yesterday, 2:15 PM</p></div>
                         </div>
                         <div class="font-medium text-[15px] text-[var(--md-sys-color-primary)]">+150</div>
                     </div>
-                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-white/50 transition cursor-pointer">
+                    <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shadow-sm">
-                                <span class="material-symbols-rounded">person</span>
-                            </div>
-                            <div>
-                                <p class="text-[15px] font-medium text-gray-900">Alice</p>
-                                <p class="text-[13px] text-gray-500">Jun 12</p>
-                            </div>
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shadow-sm"><span class="material-symbols-rounded">person</span></div>
+                            <div><p class="text-[15px] font-medium text-gray-900">Alice</p><p class="text-[13px] text-gray-500">Yesterday, 9:00 AM</p></div>
                         </div>
                         <div class="font-medium text-[15px] text-[var(--md-sys-color-primary)]">+20</div>
                     </div>
@@ -191,8 +206,218 @@
             </div>
         </div>
 
+        <!-- ================= CONTACTS / SEARCH VIEW ================= -->
+        <div id="view-contacts" class="view flex-col flex-1 h-full bg-[var(--md-sys-color-surface)] z-40 relative">
+            <div class="px-4 pt-6 pb-2 bg-[var(--md-sys-color-surface)] sticky top-0 z-20">
+                <div class="flex items-center gap-2">
+                    <button onclick="switchView('home')" class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition shrink-0">
+                        <span class="material-symbols-rounded">arrow_back</span>
+                    </button>
+                    <div class="flex-1 flex items-center bg-[var(--md-sys-color-surface-container)] rounded-full px-4 py-3 border border-transparent focus-within:border-[var(--md-sys-color-primary)] focus-within:bg-white transition-all shadow-sm">
+                        <span class="material-symbols-rounded text-gray-500 mr-2">search</span>
+                        <input id="contact-search" onkeyup="filterContacts()" type="text" placeholder="Pay anyone on EcoVities" class="bg-transparent outline-none w-full text-[15px] text-gray-900 placeholder-gray-500 font-medium">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-2 pt-4 pb-20 scrollbar-hide">
+                <h3 class="contact-header text-xs font-semibold tracking-wider text-gray-500 mb-2 px-4 uppercase">Recent</h3>
+                
+                <div class="contact-item" onclick="openChat('Alice', 'A', 'bg-blue-100', 'text-blue-700', '+91 98765 43210')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-lg">A</div>
+                        <div class="flex-1">
+                            <p class="contact-name text-[15px] font-medium text-gray-900">Alice</p>
+                            <p class="text-[13px] text-gray-500">+91 98765 43210</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-item" onclick="openChat('Green Cafe', 'G', 'bg-green-100', 'text-green-700', 'Business Account')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-700 font-medium text-lg shadow-sm">
+                            <span class="material-symbols-rounded">storefront</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="contact-name text-[15px] font-medium text-gray-900">Green Cafe</p>
+                            <p class="text-[13px] text-gray-500">Business Account</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="contact-header text-xs font-semibold tracking-wider text-gray-500 mt-6 mb-2 px-4 uppercase">All Contacts on EcoVities</h3>
+                
+                <div class="contact-item" onclick="openChat('Bob Smith', 'B', 'bg-indigo-100', 'text-indigo-700', '+91 91234 56789')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-medium text-lg">B</div>
+                        <div class="flex-1"><p class="contact-name text-[15px] font-medium text-gray-900">Bob Smith</p><p class="text-[13px] text-gray-500">+91 91234 56789</p></div>
+                    </div>
+                </div>
+
+                <div class="contact-item" onclick="openChat('Charlie', 'C', 'bg-teal-100', 'text-teal-700', '+91 99887 77665')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-medium text-lg">C</div>
+                        <div class="flex-1"><p class="contact-name text-[15px] font-medium text-gray-900">Charlie</p><p class="text-[13px] text-gray-500">+91 99887 77665</p></div>
+                    </div>
+                </div>
+
+                <div class="contact-item" onclick="openChat('David', 'D', 'bg-orange-100', 'text-orange-700', '+91 98765 00000')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-medium text-lg">D</div>
+                        <div class="flex-1"><p class="contact-name text-[15px] font-medium text-gray-900">David</p><p class="text-[13px] text-gray-500">+91 98765 00000</p></div>
+                    </div>
+                </div>
+
+                <div class="contact-item" onclick="openChat('Metro Transit', 'M', 'bg-purple-100', 'text-purple-700', 'Business Account')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-700 font-medium text-lg shadow-sm">
+                            <span class="material-symbols-rounded">directions_bus</span>
+                        </div>
+                        <div class="flex-1"><p class="contact-name text-[15px] font-medium text-gray-900">Metro Transit</p><p class="text-[13px] text-gray-500">Business Account</p></div>
+                    </div>
+                </div>
+
+                <div class="contact-item" onclick="openChat('Sarah', 'S', 'bg-pink-100', 'text-pink-700', '+91 88888 11111')">
+                    <div class="flex items-center gap-4 p-3 mx-2 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-700 font-medium text-lg">S</div>
+                        <div class="flex-1"><p class="contact-name text-[15px] font-medium text-gray-900">Sarah</p><p class="text-[13px] text-gray-500">+91 88888 11111</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PERSON HISTORY / CHAT VIEW ================= -->
+        <div id="view-chat" class="view flex-col flex-1 h-full bg-[var(--md-sys-color-surface-container)] z-40 relative">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-3 bg-[var(--md-sys-color-surface)] sticky top-0 z-20 shadow-sm shadow-white/50">
+                <button onclick="goBackFromChat()" class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                </button>
+                <div id="chat-avatar" class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-medium shadow-sm">A</div>
+                <div class="flex-1">
+                    <h1 id="chat-name" class="text-lg font-medium text-gray-900 leading-tight">Alice</h1>
+                    <p id="chat-detail" class="text-[13px] text-gray-500 leading-tight">+91 98765 43210</p>
+                </div>
+                <button class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition">
+                    <span class="material-symbols-rounded">more_vert</span>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto px-4 pt-6 pb-24 flex flex-col gap-4 scrollbar-hide">
+                <div class="text-center text-[12px] font-medium text-gray-500 my-2">May 10, 2026</div>
+                
+                <div class="self-start bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 max-w-[80%] shadow-sm">
+                    <p class="text-[15px] font-medium text-gray-900 mb-1">Request paid</p>
+                    <h3 class="text-2xl font-semibold text-[var(--md-sys-color-primary)] mb-1">+ 20 EP</h3>
+                    <p class="text-[13px] text-gray-500">Coffee Split</p>
+                </div>
+
+                <div class="text-center text-[12px] font-medium text-gray-500 my-2">Yesterday</div>
+
+                <div class="self-end bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] rounded-2xl rounded-tr-sm p-4 max-w-[80%] shadow-sm">
+                    <p class="text-[15px] font-medium mb-1">You paid</p>
+                    <h3 class="text-2xl font-semibold mb-1">- 45 EP</h3>
+                    <p class="text-[13px] opacity-80">Lunch</p>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 w-full p-4 bg-[var(--md-sys-color-surface)] border-t border-gray-200 flex gap-3">
+                <button onclick="initiatePayFromChat()" class="flex-1 bg-[var(--md-sys-color-primary)] text-white py-3.5 rounded-full text-[15px] font-medium shadow-sm hover:opacity-90 transition active:scale-95 flex items-center justify-center">
+                    Pay
+                </button>
+                <button class="flex-1 bg-[var(--md-sys-color-surface-container-high)] text-gray-900 py-3.5 rounded-full text-[15px] font-medium shadow-sm hover:bg-gray-300 transition active:scale-95 flex items-center justify-center">
+                    Request
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PAY/SEND VIEW ================= -->
+        <div id="view-pay" class="view flex-col flex-1 h-full bg-[var(--md-sys-color-surface)] z-40 relative">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 bg-[var(--md-sys-color-surface)]">
+                <button onclick="switchView('chat')" class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                </button>
+                <h1 class="text-xl font-medium text-gray-900">Pay</h1>
+            </div>
+            
+            <div class="flex-1 flex flex-col items-center justify-center px-6 pb-20">
+                <div id="pay-avatar" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-medium mb-3 shadow-sm bg-blue-100 text-blue-700">A</div>
+                <h2 id="pay-name" class="text-2xl font-medium text-gray-900">Alice</h2>
+                <p class="text-gray-500 text-sm">Paying securely with EcoVities</p>
+
+                <div class="mt-12 w-full flex items-center justify-center">
+                    <span class="text-5xl font-medium text-gray-400 mr-2">EP</span>
+                    <input id="pay-amount" type="number" placeholder="0" class="text-7xl font-medium text-gray-900 bg-transparent outline-none w-1/2 text-left placeholder-gray-300">
+                </div>
+                
+                <input type="text" placeholder="Add a note (optional)" class="mt-8 bg-[var(--md-sys-color-surface-container)] text-gray-800 px-6 py-3 rounded-full outline-none w-full max-w-xs text-center text-[15px]">
+            </div>
+
+            <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-[var(--md-sys-color-surface)] to-transparent">
+                <button id="pay-btn" onclick="processPayment()" class="w-full bg-[var(--md-sys-color-primary)] text-white py-4 rounded-full text-lg font-medium shadow-md hover:opacity-90 transition active:scale-95 flex items-center justify-center gap-2">
+                    Pay Now
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= SCAN QR VIEW ================= -->
+        <div id="view-scan" class="view flex-col flex-1 h-full bg-gray-900 z-40 relative">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="switchView('home')" class="p-2 text-white hover:bg-white/20 rounded-full transition">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+                <h1 class="text-xl font-medium text-white">Scan QR Code</h1>
+            </div>
+            
+            <div class="flex-1 flex flex-col items-center justify-center px-6 relative">
+                <div class="w-64 h-64 border-2 border-white/50 rounded-3xl relative overflow-hidden flex items-center justify-center bg-gray-800 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+                    <div class="absolute w-full h-1 bg-[var(--md-sys-color-primary-container)] scan-line shadow-[0_0_15px_3px_var(--md-sys-color-primary-container)]"></div>
+                    <span class="material-symbols-rounded text-white/20 text-6xl">qr_code</span>
+                    
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-3xl"></div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-3xl"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-3xl"></div>
+                </div>
+                
+                <div class="mt-12 bg-gray-800/80 px-6 py-3 rounded-full flex gap-3 text-white cursor-pointer hover:bg-gray-700 transition">
+                    <span class="material-symbols-rounded">photo_library</span>
+                    <span class="font-medium text-[15px]">Upload from Gallery</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RECEIVE VIEW ================= -->
+        <div id="view-receive" class="view flex-col flex-1 h-full bg-[var(--md-sys-color-surface-container)] z-40 relative">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2">
+                <button onclick="switchView('home')" class="p-2 text-gray-700 hover:bg-gray-200 rounded-full transition">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+                <h1 class="text-xl font-medium text-gray-900">Receive EcoPoints</h1>
+            </div>
+            
+            <div class="flex-1 flex flex-col items-center justify-center px-6 pb-10">
+                <div class="bg-[var(--md-sys-color-surface)] w-full max-w-sm rounded-[2rem] p-8 flex flex-col items-center shadow-md">
+                    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-medium text-xl overflow-hidden border-2 border-white shadow-sm mb-3">
+                        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=John&backgroundColor=c8f0ce" alt="Profile" class="w-full h-full object-cover">
+                    </div>
+                    <h2 class="text-xl font-medium text-gray-900">John Doe</h2>
+                    <p class="text-gray-500 text-[15px] mb-8">johndoe@ecovities</p>
+                    
+                    <div class="w-48 h-48 bg-gray-100 rounded-2xl flex items-center justify-center p-2 mb-8 border-2 border-gray-100">
+                        <!-- Simulated QR Code -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=johndoe@ecovities&color=146c2e&bgcolor=ffffff" alt="QR Code" class="w-full h-full rounded-xl mix-blend-multiply">
+                    </div>
+
+                    <button class="w-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] py-3 rounded-full text-[15px] font-medium hover:opacity-90 transition flex items-center justify-center gap-2">
+                        <span class="material-symbols-rounded text-[20px]">share</span> Share QR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= HISTORY VIEW ================= -->
         <div id="view-history" class="view flex-col flex-1 overflow-y-auto pb-24 bg-[var(--md-sys-color-surface)] scrollbar-hide">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2 bg-[var(--md-sys-color-surface)] sticky top-0 z-20">
+             <div class="px-4 pt-6 pb-4 flex items-center gap-2 bg-[var(--md-sys-color-surface)] sticky top-0 z-20 shadow-sm shadow-white/50">
                 <button onclick="switchView('home')" class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition">
                     <span class="material-symbols-rounded">arrow_back</span>
                 </button>
@@ -200,93 +425,154 @@
             </div>
             
             <div class="px-6 mt-4 space-y-6">
+                <!-- This Week -->
                 <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-3 px-2">This Week</h3>
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                    <h3 class="text-xs font-semibold tracking-wider text-gray-500 mb-3 px-2 uppercase">This Week</h3>
+                    <div class="space-y-1 bg-[var(--md-sys-color-surface-container)] rounded-3xl p-2">
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-700"><span class="material-symbols-rounded">storefront</span></div>
+                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-gray-700 shadow-sm"><span class="material-symbols-rounded">storefront</span></div>
                                 <div><p class="text-[15px] font-medium text-gray-900">Green Cafe</p><p class="text-[13px] text-gray-500">Today, 10:42 AM</p></div>
                             </div>
                             <div class="font-medium text-[15px] text-gray-900">-45</div>
                         </div>
-                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700"><span class="material-symbols-rounded">recycling</span></div>
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 shadow-sm"><span class="material-symbols-rounded">recycling</span></div>
                                 <div><p class="text-[15px] font-medium text-gray-900">Recycling Reward</p><p class="text-[13px] text-gray-500">Yesterday, 2:15 PM</p></div>
                             </div>
                             <div class="font-medium text-[15px] text-[var(--md-sys-color-primary)]">+150</div>
                         </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-3 px-2">Earlier</h3>
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700"><span class="material-symbols-rounded">person</span></div>
-                                <div><p class="text-[15px] font-medium text-gray-900">Alice</p><p class="text-[13px] text-gray-500">Jun 12, 8:00 PM</p></div>
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shadow-sm"><span class="material-symbols-rounded">person</span></div>
+                                <div><p class="text-[15px] font-medium text-gray-900">Alice</p><p class="text-[13px] text-gray-500">Yesterday, 9:00 AM</p></div>
                             </div>
                             <div class="font-medium text-[15px] text-[var(--md-sys-color-primary)]">+20</div>
                         </div>
-                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Last Week -->
+                <div>
+                    <h3 class="text-xs font-semibold tracking-wider text-gray-500 mb-3 px-2 uppercase">Last Week</h3>
+                    <div class="space-y-1 bg-[var(--md-sys-color-surface-container)] rounded-3xl p-2">
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-700"><span class="material-symbols-rounded">directions_bus</span></div>
-                                <div><p class="text-[15px] font-medium text-gray-900">Public Transit</p><p class="text-[13px] text-gray-500">Jun 11, 9:30 AM</p></div>
+                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-gray-700 shadow-sm"><span class="material-symbols-rounded">directions_bus</span></div>
+                                <div><p class="text-[15px] font-medium text-gray-900">Metro Transit</p><p class="text-[13px] text-gray-500">Jun 11, 9:30 AM</p></div>
                             </div>
                             <div class="font-medium text-[15px] text-gray-900">-15</div>
                         </div>
-                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container)] transition cursor-pointer">
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-700"><span class="material-symbols-rounded">shopping_basket</span></div>
-                                <div><p class="text-[15px] font-medium text-gray-900">Eco-Market</p><p class="text-[13px] text-gray-500">Jun 10, 5:15 PM</p></div>
+                                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 shadow-sm">D</div>
+                                <div><p class="text-[15px] font-medium text-gray-900">David</p><p class="text-[13px] text-gray-500">Jun 10, 5:15 PM</p></div>
                             </div>
                             <div class="font-medium text-[15px] text-gray-900">-120</div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--md-sys-color-surface-container-highest)] transition cursor-pointer">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-[var(--md-sys-color-primary-container)] flex items-center justify-center text-[var(--md-sys-color-on-primary-container)] shadow-sm"><span class="material-symbols-rounded">bolt</span></div>
+                                <div><p class="text-[15px] font-medium text-gray-900">Solar Rebate</p><p class="text-[13px] text-gray-500">Jun 08, 1:00 PM</p></div>
+                            </div>
+                            <div class="font-medium text-[15px] text-[var(--md-sys-color-primary)]">+500</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- ================= FULL PROFILE VIEW ================= -->
         <div id="view-profile" class="view flex-col flex-1 overflow-y-auto pb-24 bg-[var(--md-sys-color-surface-container)] scrollbar-hide">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 z-20 bg-[var(--md-sys-color-surface-container)]">
+            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 z-20 bg-[var(--md-sys-color-surface-container)] shadow-sm shadow-[var(--md-sys-color-surface-container)]">
                 <button onclick="switchView('home')" class="p-2 text-gray-700 hover:bg-gray-200 rounded-full transition">
                     <span class="material-symbols-rounded">arrow_back</span>
                 </button>
-                <h1 class="text-xl font-medium text-gray-900">Google Account</h1>
+                <h1 class="text-xl font-medium text-gray-900">Profile & Settings</h1>
             </div>
             
-            <div class="px-6 flex flex-col items-center mt-4">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?seed=John&backgroundColor=c8f0ce" alt="Profile" class="w-24 h-24 rounded-full mb-4 shadow-sm">
-                <h2 class="text-2xl font-medium text-gray-900">John Doe</h2>
-                <p class="text-sm text-gray-600 mb-6">john.doe@gmail.com</p>
-                
-                <div class="bg-[var(--md-sys-color-surface)] w-full rounded-3xl overflow-hidden shadow-sm">
-                    <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
-                        <span class="material-symbols-rounded text-gray-600">manage_accounts</span>
-                        <div class="text-left flex-1">
-                            <p class="text-[15px] font-medium text-gray-900">Manage Account</p>
-                        </div>
-                    </button>
-                    <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
-                        <span class="material-symbols-rounded text-gray-600">qr_code</span>
-                        <div class="text-left flex-1">
-                            <p class="text-[15px] font-medium text-gray-900">My QR Code</p>
-                        </div>
-                    </button>
-                    <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition">
-                        <span class="material-symbols-rounded text-gray-600">help</span>
-                        <div class="text-left flex-1">
-                            <p class="text-[15px] font-medium text-gray-900">Help & feedback</p>
-                        </div>
-                    </button>
+            <div class="px-6 flex flex-col items-center mt-2">
+                <!-- User Identity -->
+                <div class="relative mb-3">
+                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=John&backgroundColor=c8f0ce" class="w-24 h-24 rounded-full shadow-md border-4 border-[var(--md-sys-color-surface)]">
+                    <div class="absolute bottom-0 right-0 w-7 h-7 bg-[var(--md-sys-color-primary)] rounded-full flex items-center justify-center border-2 border-[var(--md-sys-color-surface-container)] text-white">
+                        <span class="material-symbols-rounded text-[14px]">edit</span>
+                    </div>
                 </div>
+                <h2 class="text-2xl font-semibold text-gray-900">John Doe</h2>
+                <p class="text-[15px] text-gray-600 mb-6 font-medium">john.doe@ecovities.com</p>
+                
+                <!-- Payment Methods -->
+                <div class="w-full mb-6">
+                    <h3 class="text-xs font-semibold tracking-wider text-gray-500 mb-2 px-2 uppercase">Payment Methods</h3>
+                    <div class="bg-[var(--md-sys-color-surface)] w-full rounded-3xl overflow-hidden shadow-sm">
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                                <span class="material-symbols-rounded text-blue-600">account_balance</span>
+                            </div>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium text-gray-900">Chase Checking</p>
+                                <p class="text-[13px] text-gray-500">•••• 4589</p>
+                            </div>
+                            <span class="material-symbols-rounded text-gray-400">chevron_right</span>
+                        </button>
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition text-[var(--md-sys-color-primary)]">
+                            <div class="w-10 h-10 rounded-full bg-[var(--md-sys-color-primary-container)] flex items-center justify-center">
+                                <span class="material-symbols-rounded text-[var(--md-sys-color-on-primary-container)]">add</span>
+                            </div>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium">Add bank account</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- App Settings -->
+                <div class="w-full mb-6">
+                    <h3 class="text-xs font-semibold tracking-wider text-gray-500 mb-2 px-2 uppercase">Settings</h3>
+                    <div class="bg-[var(--md-sys-color-surface)] w-full rounded-3xl overflow-hidden shadow-sm">
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
+                            <span class="material-symbols-rounded text-gray-600">security</span>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium text-gray-900">Security & Privacy</p>
+                            </div>
+                            <span class="material-symbols-rounded text-gray-400">chevron_right</span>
+                        </button>
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
+                            <span class="material-symbols-rounded text-gray-600">notifications_active</span>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium text-gray-900">Notifications</p>
+                            </div>
+                            <span class="material-symbols-rounded text-gray-400">chevron_right</span>
+                        </button>
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition border-b border-gray-100">
+                            <span class="material-symbols-rounded text-gray-600">dark_mode</span>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium text-gray-900">App Theme</p>
+                            </div>
+                            <p class="text-[13px] text-gray-500">Light</p>
+                        </button>
+                        <button class="w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+                            <span class="material-symbols-rounded text-gray-600">help</span>
+                            <div class="text-left flex-1">
+                                <p class="text-[15px] font-medium text-gray-900">Help & Support</p>
+                            </div>
+                            <span class="material-symbols-rounded text-gray-400">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Log out -->
+                <button class="w-full bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)] py-4 rounded-3xl text-[15px] font-medium shadow-sm hover:opacity-90 transition flex items-center justify-center gap-2 mb-8">
+                    <span class="material-symbols-rounded">logout</span> Sign Out
+                </button>
             </div>
         </div>
 
+        <!-- ================= NOTIFICATIONS VIEW ================= -->
         <div id="view-notifications" class="view flex-col flex-1 overflow-y-auto pb-24 bg-[var(--md-sys-color-surface)] scrollbar-hide">
-            <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 z-20 bg-[var(--md-sys-color-surface)]">
+             <div class="px-4 pt-6 pb-4 flex items-center gap-2 sticky top-0 z-20 bg-[var(--md-sys-color-surface)] shadow-sm shadow-white/50">
                 <button onclick="switchView('home')" class="p-2 text-gray-700 hover:bg-gray-100 rounded-full transition">
                     <span class="material-symbols-rounded">arrow_back</span>
                 </button>
@@ -294,30 +580,64 @@
             </div>
             
             <div class="px-4 mt-2 space-y-2">
-                <div class="p-4 rounded-3xl bg-[var(--md-sys-color-surface-container)] flex gap-4">
+                <!-- Unread -->
+                <div class="p-4 rounded-3xl bg-[var(--md-sys-color-surface-container)] flex gap-4 cursor-pointer hover:bg-[var(--md-sys-color-surface-container-highest)] transition">
                     <div class="w-10 h-10 rounded-full bg-[var(--md-sys-color-primary-container)] flex items-center justify-center shrink-0">
                         <span class="material-symbols-rounded text-[var(--md-sys-color-primary)]">redeem</span>
                     </div>
-                    <div>
-                        <h3 class="text-[15px] font-medium text-gray-900 mb-1">Points Received!</h3>
-                        <p class="text-[14px] text-gray-600 leading-snug mb-2">You earned 150 EP for your recent recycling drop-off.</p>
-                        <p class="text-[12px] text-gray-500">2 hours ago</p>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="text-[15px] font-medium text-gray-900">Points Received!</h3>
+                            <div class="w-2.5 h-2.5 bg-[var(--md-sys-color-primary)] rounded-full"></div>
+                        </div>
+                        <p class="text-[14px] text-gray-600 leading-snug mb-1">You earned 150 EP for your recent recycling drop-off at Campus Center.</p>
+                        <p class="text-[12px] text-gray-500 font-medium">2 hours ago</p>
                     </div>
                 </div>
-                <div class="p-4 rounded-3xl bg-white border border-gray-100 flex gap-4">
+
+                <!-- Unread -->
+                <div class="p-4 rounded-3xl bg-[var(--md-sys-color-surface-container)] flex gap-4 cursor-pointer hover:bg-[var(--md-sys-color-surface-container-highest)] transition">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-rounded text-blue-600">group</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="text-[15px] font-medium text-gray-900">Payment Request</h3>
+                            <div class="w-2.5 h-2.5 bg-[var(--md-sys-color-primary)] rounded-full"></div>
+                        </div>
+                        <p class="text-[14px] text-gray-600 leading-snug mb-1">Alice requested 20 EP for "Coffee Split".</p>
+                        <p class="text-[12px] text-gray-500 font-medium">5 hours ago</p>
+                    </div>
+                </div>
+
+                <!-- Read -->
+                <div class="p-4 rounded-3xl bg-white border border-gray-100 flex gap-4 cursor-pointer hover:bg-gray-50 transition">
                     <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
                         <span class="material-symbols-rounded text-gray-600">security</span>
                     </div>
-                    <div>
+                    <div class="flex-1">
                         <h3 class="text-[15px] font-medium text-gray-900 mb-1">Security Alert</h3>
-                        <p class="text-[14px] text-gray-600 leading-snug mb-2">New login detected from a new device in Chrome OS.</p>
+                        <p class="text-[14px] text-gray-600 leading-snug mb-1">New login detected from a new device in Chrome OS.</p>
                         <p class="text-[12px] text-gray-500">Yesterday</p>
+                    </div>
+                </div>
+
+                <!-- Read -->
+                <div class="p-4 rounded-3xl bg-white border border-gray-100 flex gap-4 cursor-pointer hover:bg-gray-50 transition">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-rounded text-orange-600">emoji_events</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-[15px] font-medium text-gray-900 mb-1">Goal Reached!</h3>
+                        <p class="text-[14px] text-gray-600 leading-snug mb-1">You just surpassed 10kg of CO2 saved. Keep up the green habits!</p>
+                        <p class="text-[12px] text-gray-500">Jun 10</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="absolute bottom-0 w-full bg-[var(--md-sys-color-surface-container)] pt-2 pb-6 px-2 flex justify-around items-center z-50">
+        <!-- ================= BOTTOM NAVIGATION ================= -->
+        <div id="bottom-nav" class="absolute bottom-0 w-full bg-[var(--md-sys-color-surface-container)] pt-2 pb-6 px-2 flex justify-around items-center z-50">
             <button onclick="switchView('home')" id="nav-home" class="nav-item active relative flex flex-col items-center justify-center w-16 h-14 group">
                 <div class="nav-indicator"></div>
                 <span class="material-symbols-rounded z-10">home</span>
@@ -340,7 +660,16 @@
     </div>
 
     <script>
+        let currentContact = {};
+        let previousView = 'home';
+
         function switchView(viewId) {
+            // Track previous view before switching
+            const activeViews = document.querySelectorAll('.view.active');
+            if(activeViews.length > 0 && activeViews[0].id !== 'view-chat' && activeViews[0].id !== 'view-pay') {
+                previousView = activeViews[0].id.replace('view-', '');
+            }
+
             // Hide all views
             document.querySelectorAll('.view').forEach(el => {
                 el.classList.remove('active');
@@ -352,12 +681,112 @@
                 targetView.classList.add('active');
             }
             
-            // Handle Bottom Nav Highlighting
+            // Handle Bottom Nav Highlight
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            // If the view has a corresponding nav button, activate it
             const navBtn = document.getElementById('nav-' + viewId);
             if(navBtn) navBtn.classList.add('active');
+
+            // Hide bottom nav if in a specific flow
+            const bottomNav = document.getElementById('bottom-nav');
+            if (['home', 'history', 'profile'].includes(viewId)) {
+                bottomNav.style.display = 'flex';
+            } else {
+                bottomNav.style.display = 'none';
+            }
+        }
+
+        // Live Search Filter Logic
+        function filterContacts() {
+            const query = document.getElementById('contact-search').value.toLowerCase();
+            const contacts = document.querySelectorAll('.contact-item');
+            
+            contacts.forEach(contact => {
+                const name = contact.querySelector('.contact-name').innerText.toLowerCase();
+                if (name.includes(query)) {
+                    contact.style.display = 'block';
+                } else {
+                    contact.style.display = 'none';
+                }
+            });
+
+            // Hide headers if actively searching
+            document.querySelectorAll('.contact-header').forEach(header => {
+                header.style.display = query ? 'none' : 'block';
+            });
+        }
+
+        // Open Individual Chat/Transaction History (GPay Style)
+        function openChat(name, initial, bgClass, textClass, detail) {
+            currentContact = { name, initial, bgClass, textClass };
+            
+            document.getElementById('chat-name').innerText = name;
+            document.getElementById('chat-detail').innerText = detail || 'EcoVities User';
+            
+            const avatar = document.getElementById('chat-avatar');
+            
+            if(initial === 'G' || initial === 'M') {
+                const icon = initial === 'G' ? 'storefront' : 'directions_bus';
+                avatar.innerHTML = `<span class="material-symbols-rounded text-sm">${icon}</span>`;
+                avatar.className = `w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-700 font-medium shadow-sm`;
+            } else {
+                avatar.innerHTML = initial;
+                avatar.className = `w-10 h-10 rounded-full flex items-center justify-center font-medium shadow-sm ${bgClass} ${textClass}`;
+            }
+
+            switchView('chat');
+        }
+
+        function goBackFromChat() {
+            switchView(previousView || 'home');
+        }
+
+        function initiatePayFromChat() {
+            openPay(currentContact.name, currentContact.initial, currentContact.bgClass, currentContact.textClass);
+        }
+
+        function openPay(name, initial, bgClass, textClass) {
+            // Populate Payment View
+            document.getElementById('pay-name').innerText = name;
+            const avatar = document.getElementById('pay-avatar');
+            
+            if(initial === 'G' || initial === 'M') {
+                const icon = initial === 'G' ? 'storefront' : 'directions_bus';
+                avatar.innerHTML = `<span class="material-symbols-rounded">${icon}</span>`;
+                avatar.className = `w-20 h-20 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-700 font-medium text-3xl shadow-sm mb-3`;
+            } else {
+                avatar.innerHTML = initial;
+                avatar.className = `w-20 h-20 rounded-full flex items-center justify-center text-3xl font-medium mb-3 shadow-sm ${bgClass} ${textClass}`;
+            }
+            
+            // Reset input and UI
+            document.getElementById('pay-amount').value = '';
+            const btn = document.getElementById('pay-btn');
+            btn.innerHTML = 'Pay Now';
+            btn.classList.replace('bg-[#10b981]', 'bg-[var(--md-sys-color-primary)]');
+            
+            switchView('pay');
+        }
+
+        function processPayment() {
+            const amount = document.getElementById('pay-amount').value;
+            if(!amount || amount <= 0) return alert("Please enter an amount");
+
+            const btn = document.getElementById('pay-btn');
+            
+            // Loading State
+            btn.innerHTML = '<span class="material-symbols-rounded animate-spin">refresh</span> Processing...';
+            
+            // Simulate Network Request
+            setTimeout(() => {
+                // Success State
+                btn.innerHTML = '<span class="material-symbols-rounded">check_circle</span> Paid Successfully';
+                btn.classList.replace('bg-[var(--md-sys-color-primary)]', 'bg-[#10b981]');
+                
+                // Return to Chat View after payment
+                setTimeout(() => {
+                    switchView('chat');
+                }, 1200);
+            }, 1500);
         }
     </script>
 </body>
